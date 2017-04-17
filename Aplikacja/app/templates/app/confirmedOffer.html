@@ -1,0 +1,52 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+<!--poczatek danych usera-->
+{% if user.is_authenticated %}
+<hr />
+<h2>{{ user.username }} - jesteś w trakcie zatwierdzania oferty dla klienta.</h2><br>
+<h2>Obecnie pracujesz na wniosku {{creditapplication.id}}</h2>
+
+<h3>Zaproponowna oferta z banku to :</h3>
+<h3>Minimalna  kwota to : {{proposedoffer.initial_amount}} </h3>
+<h3>Maksymalna kwota to : {{proposedoffer.maximal_amount}} </h3>
+<h3>Minimalny  okres to : {{proposedoffer.minimum_load_period}}</h3>
+<h3>Maksymalny okres to : {{proposedoffer.maximum_load_period}}</h3>
+
+<h2>W celu zatwierdzenia oferty i oczekiwania na wymagane dokumenty kliknij w przycisk Wyślij.</h2>
+<hr />
+<h3>{{ message }}</h3>
+<ul>
+    <li><a href="/wniosek/{{ creditapplication.id }}/rezygnacja/">Rezygnacja</a></li><!--przenosi na dobry link-->
+</ul>
+<ul>
+  <li><input type="submit" value="Oblicz ratę" onclick="skrypt()" class="btn btn-primary btn-large"/></li><!--przenosi na dobry link-->
+</ul>
+<form action="" method="post">{% csrf_token %}<!--jak jest pusta action="" to dobrze działa i zapisuje-->
+<hr />
+    <p>
+        <label for="confirmed_amount">Kwota wnioskowana: </label>
+        <input type="number" id="confirmed_amount" name="confirmed_amount" step=1 title="Format 1000"  min={{proposedoffer.initial_amount}} max={{proposedoffer.maximal_amount}} required placeholder="Wpisz kwotę"/>
+    </p>
+    <p>
+        <label for="period_approved">Okres wnioskowany: </label>
+        <input type="number"  id="period_approved" name="period_approved" step=1 title="Format 1000"  min={{proposedoffer.minimum_load_period}} max={{proposedoffer.maximum_load_period}} required placeholder="Okres"/>
+    </p>
+    <script type="text/javascript">
+        function skrypt() {
+            var kwota = document.getElementById("confirmed_amount").value;
+            var okres = document.getElementById("period_approved").value;
+            var rata = parseInt(parseInt(kwota) / parseInt(okres));
+            if (isNaN(rata) == true)
+            {
+                rata = "Niepoprawne dane";
+            }
+            alert('Kwota raty do spłacenia: ' + rata + '');
+        }
+    </script>
+<input type="submit" value="Wyślij zatwierdzoną ofertę" class="btn btn-primary btn-large"/>
+</form>
+{% else %}
+<h1>Aby otrzymać odpowiednie dostępy do zatwierdzania wniosków skontaktuj sie z twórcą portalu!</h1>
+{% endif %}
+<!--koniec danych usera-->
+{% endblock %}

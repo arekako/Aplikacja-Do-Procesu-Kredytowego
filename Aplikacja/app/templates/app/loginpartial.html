@@ -1,0 +1,23 @@
+{% if user.is_authenticated %}
+<form id="logoutForm" action="/logout" method="post" class="navbar-right">
+    {% csrf_token %}
+    <!--tutaj sterowanie tym co widoczne po zalogowaniu-->
+    <ul class="nav navbar-nav">
+          <li><a href="{% url 'personalData' %}">Nowy wniosek</a></li>
+          <li><a href="{% url 'start' %}">Wnioski</a></li>
+    </ul>
+    <!--tutaj konczy sie to co dodano-->
+    <ul class="nav navbar-nav navbar-right">
+        <li><span class="navbar-brand">Witaj {{ user.username }}!</span></li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Wyloguj</a></li>
+    </ul>
+
+</form>
+
+{% else %}
+
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="{% url 'login' %}">Zaloguj sie</a></li>
+</ul>
+
+{% endif %}

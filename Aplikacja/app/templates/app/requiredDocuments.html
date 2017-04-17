@@ -1,0 +1,57 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+<!--poczatek danych usera-->
+{% if user.is_authenticated %}
+<hr />
+<h2>{{ user.username }} Jesteś w trakcie wystawiania wymaganych dokumentów dla klienta.</h2><br>
+<hr />
+<h2>Obecnie pracujesz na wniosku {{creditapplication.id}}</h2>
+
+<h3>Poniżej lista wymaganych dokumentów, które respektuje bank:</h3>
+<h3>Aby dokument był wymagany zaznacz checkbox obok dokumentu: </h3>
+{% if technicalDocuments %}
+<div name="dokumenty">
+<ul>
+    {% for element in technicalDocuments %}
+    <li>
+    Id dokumentu : {{ element.id }}    -    Nazwa dokumentu : {{ element.document_name }}
+    <input type="checkbox" name={{ element.id }} id="{{ element.id }}" value="False" onchange="refreshValueofDocumentForm({{ element.id }},{{technicalDocuments.count}});" required/>
+    </li>
+    
+    {% endfor %}
+</ul>
+    <!--
+        <ul>
+    <li>
+        <input type="submit" value="Zatwierdź wybór" onclick="refreshNumbers(technicalDocuments.count);"/>
+    </li>
+</ul>
+    
+        -->
+</div>
+{% else %}
+<h3>Nie masz zadnych dokumentów</h3>
+{% endif %}
+<h2>W celu przesłania klientowi listy wymaganych dokumentów kliknij w przycisk Wyślij.</h2>
+<hr />
+<h3>{{ message }}</h3>
+<ul>
+    <li><a href="/wniosek/{{ creditapplication.id }}/odrzucenie/">Odrzuć wniosek</a></li><!--przenosi na dobry link-->
+</ul>
+<form action="" method="post">{% csrf_token %}<!--jak jest pusta action="" to dobrze działa i zapisuje-->
+<hr />
+    <!--tutaj zrobić listę z checkboxem, poniższy scrypt powoduje, że nie da się zatwierdzić bez wyboru dokumentów-->
+    <p>
+        <label for="documents_number">Wybierano nastepujące  dokumenty z checklisty: </label>
+
+        <input type="text" name="documents_number" id ="documents_number" placeholder="Nie wybrałeś" required data-readonly/><!--text-->
+    </p>
+
+<input type="submit" name="przyciskZatwierdzDoksy" id="przyciskZatwierdzDoksy" value="Wyślij" disabled class="btn btn-primary btn-large" /><!--na start wyłączony odswieża się gdy jest przynajmniej jeden zaznaczony-->
+</form>
+<!--dopisane-->
+{% else %}
+<h1>Aby otrzymać odpowiednie dostępy skontaktuj sie z twórcą portalu!</h1>
+{% endif %}
+<!--koniec danych usera-->
+{% endblock %}

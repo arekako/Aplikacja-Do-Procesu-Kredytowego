@@ -1,0 +1,51 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+<!--poczatek danych usera-->
+{% if user.is_authenticated %}
+<hr />
+<h2>{{ user.username }}  - Podejmij ostateczną decyzję.</h2><br>
+<hr />
+<h3>{{ message }}</h3>
+<!--
+   <ul>
+    <li><a href="/wniosek/{ creditapplication.id }/odrzucenie/">Odrzuć wniosek</a></li><!--przenosi na dobry link
+</ul> 
+
+-->
+{% if requiredDocuments %}
+<h3>Zażądano następujących dokumentów: </h3>
+{% for dok in  dokumenty %}
+<ul>
+    <li>{{dok.id}} -  {{dok.document_name}}</li>
+</ul>
+{% endfor %} 
+{% endif %}
+{% if addedDocuments %}
+<h3>
+Ścieżka do pliku : {{ addedDocuments.file }}<br>
+Komentarz od doradcy : {{ addedDocuments.name }}<br>
+Data dodania : {{ addedDocuments.added_date }}<br>
+</h3>
+{% endif %}
+<form action="" method="post">{% csrf_token %}
+<hr />
+    <p>
+        <label for="decision">Ostateczna decyzja : </label>
+        <select name="decision" required>
+                  <option disabled="" selected="" value=""> -- Zadecyduj -- </option>
+		          <option value="1">Odrzut</option>
+		          <option value="2">Wypłacenie</option> 
+        </select>
+    </p>
+    <p>
+        <label for="comment">Komunikat dla klienta: </label>
+        <input type="text" required name="comment"/>
+    </p>
+
+<input type="submit" value="Prześlij ostateczną decyzję " class="btn btn-primary btn-large"/>
+</form>
+{% else %}
+<h1>Aby otrzymać odpowiednie dostępy skontaktuj sie z twórcą portalu!</h1>
+{% endif %}
+<!--koniec danych usera-->
+{% endblock %}

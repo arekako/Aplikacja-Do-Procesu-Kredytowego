@@ -1,0 +1,57 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+<h3>{{ message }}</h3>
+<script type="text/javascript">
+    function clicked() {
+       if (confirm('Czy napewno?')) {
+           yourformelement.submit();
+       } else {
+           return false;
+       }
+    }
+</script>
+
+<script type='text/javascript'>
+
+function foo() {
+
+
+var user_choice = window.confirm('Would you like to continue?');
+
+
+if(user_choice==true) {
+
+
+window.location='your url';  // you can also use element.submit() if your input type='submit' 
+
+
+} else {
+
+
+return false;
+
+
+}
+}
+
+</script>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>W celu złożenia nowego wniosku wciśnij przycisk</h2>
+        <form action="{% url 'personalData' %}" method="get">{% csrf_token %}
+        <input type="submit" value="Złóż nowy wniosek" class="btn btn-primary btn-large"/><!--onclick="return confirm('Jesteś pewien?')"-->
+        </form>
+    </div>
+    <div class="col-md-4">
+        <h2>Aby dokonczyć złożony wniosek kredytowy kliknij w przycisk</h2>
+        <form action="{% url 'indexOferta' %}" method="get">{% csrf_token %}<!--Other application-->
+        <input type="submit" value="Dokończ wniosek" class="btn btn-primary btn-large"/><!-- onclick="return confirm('Jesteś pewien?')"-->
+        </form>
+    </div>
+        </div>
+{% else %}
+<h1>W celu składania wniosków kredytowych należy zalogować się do Aplikacji!</h1>
+{% endif %}
+{% endblock %}

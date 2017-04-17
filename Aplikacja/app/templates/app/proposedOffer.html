@@ -1,0 +1,81 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+<!--poczatek danych usera-->
+{% if user.is_authenticated %}
+<hr />
+<h2>{{ user.username }} Jesteś w trakcie przeslania oferty dla klienta.</h2><br>
+<hr />
+<h2>Obecnie pracujesz na wniosku {{creditapplication.id}}</h2>
+
+<h3>Oferta z silnika banku:Id    {{OfertaBankuDlaWniosku.id}}</h3>
+<h3>Oferta z silnika banku:Nazwa {{OfertaBankuDlaWniosku.name}}</h3>
+<h3>Oferta z silnika banku:Opis  {{OfertaBankuDlaWniosku.description}}</h3>
+<h3>Oferta z silnika banku:Kwota {{OfertaBankuDlaWniosku.amount}}</h3>
+<h3>Oferta z silnika banku:Okres {{OfertaBankuDlaWniosku.period}}</h3>
+
+<h2>W celu prezentacji oferty klientowi kliknij w przycisk Wyślij.</h2>
+<hr />
+<h3>{{ message }}</h3>
+
+<ul>
+    <li><a href="/wniosek/{{ creditapplication.id }}/odrzucenie/">Odrzuć wniosek</a></li><!--przenosi na dobry link-->
+</ul>
+
+<form action="" method="post">{% csrf_token %}<!--jak jest pusta action="" to dobrze działa i zapisuje-->
+<hr />
+    <!--dorobić skrypt, który nie pozwoli na zapis niepopranych wartości-->
+        <script type="text/javascript">
+        function skryptkwoty() {
+            var initial = document.getElementById("initial_amount").value;
+            var maximal = document.getElementById("maximal_amount").value;
+
+            var init = parseInt(initial);
+            var maxil = parseInt(maximal);
+
+            if (init>maxil) {
+                document.getElementById("initial_amount").setAttribute("placeholder", "Zmniejsz kwotę");//tutaj zmienic
+                document.getElementById("initial_amount").setAttribute("title", "Kwota minimalna nie może być wieksza od maksymalnej");//tutaj zmienic
+                document.getElementById("initial_amount").value = "";
+            }
+            
+        }
+    </script>
+        <script type="text/javascript">
+        function skryptokres() {
+            var min = document.getElementById("minimum_load_period").value;
+            var max = document.getElementById("maximum_load_period").value;
+
+            var minokres = parseInt(min);
+            var maxokres = parseInt(max);
+
+            if (minokres > maxokres) {
+                document.getElementById("minimum_load_period").setAttribute("placeholder", "Zmniejsz okres");//tutaj zmienic
+                document.getElementById("minimum_load_period").setAttribute("title", "Okres min musi być mniejszy od okresu max");//tutaj zmienic
+                document.getElementById("minimum_load_period").value = "";
+            }
+            
+        }
+    </script>
+    <p>
+        <label for="initial_amount">Minimalna kwota: </label>
+        <input type="number" name="initial_amount" id="initial_amount" onchange="skryptkwoty()" step=100 title="Format 1000"   min="0" required placeholder="Wpisz minimalną kwotę"/>
+    </p>
+    <p>
+        <label for="maximal_amount">Maksymalna kwota: </label>
+        <input type="number" name="maximal_amount" id="maximal_amount" onchange="skryptkwoty()" step=100 title="Format 1000" max={{OfertaBankuDlaWniosku.amount}} required placeholder="Wpisz maksymalną kwotę"/>
+    </p>
+    <p>
+        <label for="minimum_load_period">Minimalny okres: </label>
+        <input type="number" name="minimum_load_period" id="minimum_load_period" onchange="skryptokres()" step=1 min="0" required placeholder="Wpisz minimalny okres"/><!--text-->
+    </p>
+    <p>
+        <label for="maximum_load_period">Maksymalny okres: </label>
+        <input type="number" name="maximum_load_period" id="maximum_load_period" onchange="skryptokres()" step=1 max={{OfertaBankuDlaWniosku.period}} required placeholder="Wpisz maksymalny okres"/>
+    </p>
+<input type="submit" value="Wyślij" class="btn btn-primary btn-large"/>
+</form>
+{% else %}
+<h1>Aby otrzymać odpowiednie dostępy skontaktuj sie z twórcą portalu!</h1>
+{% endif %}
+<!--koniec danych usera-->
+{% endblock %}

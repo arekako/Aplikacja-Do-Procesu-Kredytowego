@@ -1,0 +1,27 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+<!--poczatek danych usera-->
+{% if user.is_authenticated %}
+<hr />
+<h2>{{ user.username }}  - jesteś w trakcie odrzucania wniosku.</h2><br>
+<hr />
+<h2>Obecnie pracujesz na wniosku {{creditapplication.id}}</h2>
+
+<hr />
+<h3>{{ message }}</h3>
+<h3>Podaj powód odrzucenia: </h3>
+<!--dokonczenie formy-->
+<form action="" method="post">{% csrf_token %}<!--jak jest pusta action="" to dobrze działa i zapisuje-->
+<hr />
+   <p>
+        <label for="comment">Podaj powód odrzucenia: </label>
+        <input type="text" name="comment" required/>
+   </p>
+<input type="submit" value="Odrzuć wniosek" class="btn btn-primary btn-large"/>
+</form>
+<!--dopisane-->
+{% else %}
+<h1>Aby otrzymać odpowiednie dostępy skontaktuj sie z twórcą portalu!</h1>
+{% endif %}
+<!--koniec danych usera-->
+{% endblock %}

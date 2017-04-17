@@ -1,0 +1,336 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+<!--poczatek danych usera-->
+{% if user.is_authenticated %}
+<hr />
+<h2>{{ user.username }} - jesteś w trakcie składania  wniosku kredytowego.</h2><br>
+<hr />
+<h2>Wprowadź wszystkie wymagane dane i kliknij w przycisk Wyślij.</h2>
+<hr />
+<h3>{{ message }}</h3>
+<form action="{% url 'personalData' %}" method="post">{% csrf_token %}<!--tutaj trzeba podać do jakiego form POST odnosi się, do jakiego urls przenosi -->
+<hr />
+    <script type="text/javascript">
+        function skryptpesel() {
+            var pesel = document.getElementById("pesel").value;
+            var wyr_regularne = /^[0-9]{11}$/;
+            if (wyr_regularne.test(pesel) == false) {
+                document.getElementById("pesel").setAttribute("title", "Popraw pesel");//tutaj zmienic
+                document.getElementById("pesel").setAttribute("placeholder", "Nieprawidłowy pesel");//tutaj zmienic
+                document.getElementById("pesel").value = "";
+            }
+            else {
+                var dig = ("" + pesel).split("");
+                var kontrola = (1 * parseInt(dig[0]) + 3 * parseInt(dig[1]) + 7 * parseInt(dig[2]) + 9 * parseInt(dig[3]) + 1 * parseInt(dig[4]) + 3 * parseInt(dig[5]) + 7 * parseInt(dig[6]) + 9 * parseInt(dig[7]) + 1 * parseInt(dig[8]) + 3 * parseInt(dig[9])) % 10;
+                if (kontrola == 0) kontrola = 10;
+                kontrola = 10 - kontrola;
+                if (parseInt(dig[10]) == kontrola) {
+                    document.getElementById("pesel").setAttribute("title", "Tak")//tutaj zmienic
+                }
+                else {
+                    document.getElementById("pesel").setAttribute("title", "Popraw pesel");//tutaj zmienic
+                    document.getElementById("pesel").setAttribute("placeholder", "Nieprawidłowy pesel");//tutaj zmienic
+                    document.getElementById("pesel").value = "";
+                }
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        function skryptdochody() {
+            var koszty = document.getElementById("monthly_expenses").value;
+            var dochody_um = document.getElementById("awerage_six_monthly_income_input").value;
+            var dochody_em = document.getElementById("pension_amount_input").value;
+
+            var init = parseInt(koszty);
+            var dochum = parseInt(dochody_um);
+            var dochem = parseInt(dochody_em);
+
+
+            if (init > dochum || init > dochem) {
+                document.getElementById("monthly_expenses").setAttribute("placeholder", "Zmniejsz koszty");//tutaj zmienic
+                document.getElementById("monthly_expenses").setAttribute("title", "Koszty nie mogą być większe od dochodów");//tutaj zmienic
+                document.getElementById("monthly_expenses").value = "";
+                document.getElementById("awerage_six_monthly_income_input").value = "";
+                document.getElementById("pension_amount_input").value = "";
+            }
+            
+        }
+    </script>
+<table>
+<tr>
+    <td>
+        <label for="pesel">Pesel klienta : </label>
+    </td>
+    <td>
+        <input type="text" id="pesel" onchange="skryptpesel()" name="pesel" pattern="[0-9]+" maxlength="11" minlength="11" required placeholder="Wpisz pesel"/><!--tutaj pattern zrobić, walidacja skrypt na pesel wyrazenia regularne [0-9]{11} [0-9]{4}[0-3]{1}[0-9}{1}[0-9]{5}?-->
+    </td>
+    <td>
+        <label for="identity_card">Numer dowodu : </label>
+    </td>
+    <td>
+        <input type="text" name="identity_card" maxlength="9" minlength="9" required placeholder="Wprowadź numer dowodu"/><!--tutaj pattern zrobić-->
+    </td>
+</tr>
+<tr>
+</tr>
+<tr>
+</tr>
+<tr>
+</tr>
+<tr>
+    <td>
+        <label for="name">Imię klienta : </label>
+    </td>
+    <td>
+        <input type="text" pattern="[a-zA-ZąćęłńóśźżĄĘŁŃÓŚŹŻ]+" required name="name"/><!--same litery-->
+    </td>
+    <td>
+        <label for="surname">Nazwisko klienta : </label>
+    </td>
+    <td>
+        <input type="text" pattern="[a-zA-ZąćęłńóśźżĄĘŁŃÓŚŹŻ-]+" required  name="surname"/><!--litery i myslnik -->
+    </td>
+    <td>
+        <label for="telephon_number">Numer telefonu komórkowego : </label>
+    </td>
+    <td>
+        <input type="text" name="telephon_number" pattern="[0-9]+" title="Format xxxxxxxxx cyfry" maxlength="9" minlength="9" required placeholder="Wpisz numer telefonu"/>
+    </td>
+</tr>
+<tr>
+</tr>
+<tr>
+</tr>
+<tr>
+</tr>
+<tr>
+    <td>
+        <label for="mail">E - mail : </label>
+    </td>
+    <td>
+        <input type="email" name="mail" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" title="Odpowiedni format" required placeholder="Uzupełnij mail"/>
+    </td>
+    <td>
+        <label for="monthly_expenses">Koszty miesięczne : </label>
+    </td>
+    <td>
+        <input type="number" name="monthly_expenses" onchange="skryptdochody()" id="monthly_expenses" step=1 title="Format - cyfry"  min="0" required placeholder="Wpisz koszty"/>
+    </td>
+</tr>
+<tr>
+</tr>
+<tr>
+</tr>
+<tr>
+</tr>
+</table>
+        <hr />
+<table>
+<tr>
+    <td>
+        <label for="city">Miejsce zamieszkania : </label>
+    </td>
+    <td>
+         <input type="text" name="city" pattern="[a-zA-ZąćęłńóśźżĄĘŁŃÓŚŹŻ-]+" required placeholder="Wpisz miejscowość"/><!--Litery i myslnik-->
+    </td>
+    <td>
+        <label for="postal_code">Kod pocztowy : </label>
+    </td>
+    <td>
+       <input type="text" name="postal_code" pattern="^\d{2}-\d{3}$" maxlength="6" minlength="6" title="Format xx-xxx" required placeholder="Uzupełnij kod pocztowy"/><!--title="Format xx-xxx" maxlength="6" minlength="6" pattern="[0-9]{2}\-[0-9]{3}" --> 
+    </td>
+    <td>
+       <label for="street">Ulica : </label>
+    </td>
+    <td>
+      <input type="text" name="street" pattern="[a-zA-Z0-9ąćęłńóśźżĄĘŁŃÓŚŹŻ-]+" placeholder="Wpisz ulicę"/> <!--required-->
+    </td>
+</tr>
+<tr>
+</tr>
+<tr>
+</tr>
+<tr>
+</tr>
+<tr>
+  <td>
+        <label for="house_number">Numer domu : </label>
+    </td>
+    <td>
+        <input type="text" name="house_number" pattern="[0-9]+" title="Format: cyfra" required placeholder="Wpisz numer domu"/>
+    </td>
+    <td>
+        <label for="flat_number">Numer mieszkania : </label>
+    </td>
+    <td>
+        <input type="text" name="flat_number" placeholder="Wpisz numer mieszkania"/>
+    </td>
+</tr>
+</table>
+        <hr />
+<table>
+<tr>
+    <td>
+        <label for="education">Wyksztalcenie : </label>
+    </td>
+    <td>
+        <select name="education" required>
+                  <option disabled="" selected="" value=""> -- Wybierz wykształcenie -- </option>
+		          <option value="GIMNAZJALNE">Gimnazjalne</option>
+		          <option value="PODSTAWOWE">Podstawowe</option>
+                  <option value="ZASADNICZE_ZAWODOWE">Zasadnicze zawodowe</option>
+                  <option value="SREDNIE">Srednie</option>
+                  <option value="WYZSZE">Wyzsze</option>	    
+        </select>
+    </td>
+    <td>
+        <label for="marital_status">Stan cywilny : </label>
+    </td>
+    <td>
+         <select name="marital_status" required>
+                  <option disabled="" selected="" value=""> -- Wybierz stan cywilny -- </option>
+                  <option value="KAWALER">Kawaler</option>
+		          <option value="PANNA">Panna</option>
+                  <option value="WDOWIEC">Wdowiec</option>
+                  <option value="WDOWA">Wdowa</option>
+                  <option value="ROZWODNIK">Rozwodnik</option>	    
+                  <option value="ROZWODKA">Rozwodka</option>	
+        </select>
+    </td>
+</tr>
+</table>
+<hr />
+<!--wybor zrodla dochodu-->
+<table>
+<tr>
+    <td>
+        <label for="zrodlo_dochodu">Zrodlo dochodu : </label>
+    </td>
+    <td>
+        <select name="zrodlo_dochodu" onchange="refreshIncomeFields(value);" required>
+                <option disabled="" selected="" value=""> -- Wybierz źródło -- </option><!--Pozwala wybrac innye element niż wybierz, pilnuje walidacji-->
+                <option value="1">Umowa na czas nieokreślony</option>
+                <option value="2">Umowa na czas określony</option>
+                <option value="3">Umowa zlecenie</option>
+                <option value="4">Umowa o dzieło</option>
+                <option value="5">Emerytura</option>				    
+                <option value="6">Renta bezterminowa</option>		
+                <option value="7">Renta terminowa</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <td>
+        <p id="demo"></p>
+    </td>
+    <td>
+        <label id="label0"></label>
+    </td>
+    <td>
+        <input type="hidden" id="input0"/>
+    </td>
+</tr>
+</table>
+<table>
+<tr>
+    <td>
+        <label id="date_start_of_employment_label"></label>
+    </td>
+    <td><!--type hidden  data-date-inline-picker="true" -->
+        <input for="date_start_of_employment" type="hidden" title="rrrr-mm-dd" id="date_start_of_employment_input" name="date_start_of_employment_input" data-date-inline-picker="true" /><!--kalendarz-->
+    </td>
+    <td>
+        <label id="end_of_employment_label"></label>
+    </td>
+    <td>
+        <input for ="end_of_employment" type="hidden" id="end_of_employment_input" name="end_of_employment_input" required data-date-inline-picker="true"/>
+    </td>
+</tr>
+<tr>
+</tr>
+<tr>
+    <td>
+        <label id="occupational_group_label"></label>
+    </td>
+    <td>
+        <!--trzeba ukryc to na stronie jak?-->
+         <select for="occupational_group_select" name="occupational_group_select" id="occupational_group_select" style="display:none"><!--required-->
+                  <option disabled="" selected="" value=""> -- Wybierz grupę zawodową -- </option>
+                  <option value="el1">Parlamentarzyści, wyżsi urzędnicy i kierownicy</option>
+		          <option value="el2">Specjaliści</option>
+                  <option value="el3">Technicy i inni średni personel</option>
+                  <option value="el4">Pracownicy biurowi</option>
+                  <option value="el5">Pracownicy usług osobistych i sprzedawcy</option>	    
+                  <option value="el6">Robotnik przemysłowy</option>
+                  <option value="el7">Operator i monter maszyn</option>
+                  <option value="el8">Siły zbrojne</option>	    
+                  <option value="el9">Inne</option>	
+        </select>
+    </td>
+    <td>
+        <label id="awerage_six_monthly_income_label"></label>
+    </td>
+    <td>
+        <input  for="awerage_six_monthly_income_input" onchange="skryptdochody()" type="hidden" id="awerage_six_monthly_income_input" name="awerage_six_monthly_income_input" min="0"/>
+    </td>
+</tr>
+<tr>
+</tr>
+<tr>
+    <td>
+        <label id="profession_label"></label>
+    </td>
+    <td>
+        <input for="profession_input" type="hidden" id="profession_input" name="profession_input" placeholder="Wpisz zawód"/>
+    </td>
+    <td>
+        <label id="nip_label"></label>
+    </td>
+    <td>
+        <input type="hidden" for="profession_input" id="nip_input" name="nip_input"  maxlength="10" minlength="10" pattern="[0-9]+" title="Format 1234567890"  placeholder="Wpisz NIP"/>
+    </td>
+</tr>
+</table>
+<!--pola do emerytury/renty-->
+<table>
+<tr>
+    <td>
+        <label id="date_start_label"></label>
+    </td>
+    <td>
+        <input type="hidden" id="date_start_input" name="date_start_input" data-date-inline-picker="true" />
+    </td>
+    <td>
+        <label id="date_end_label"></label>
+    </td>
+    <td>
+        <input type="hidden" id="date_end_input" name="date_end_input" data-date-inline-picker="true"/>
+    </td>
+</tr>
+<tr>
+</tr>
+<tr>
+    <td>
+        <label id="pension_amount_label"></label>
+    </td>
+    <td>
+        <input type="hidden" id="pension_amount_input" onchange="skryptdochody()" name="pension_amount_input" min="0" placeholder="Wpisz wysokosc świadczenia"/>
+    </td>
+    <td>
+        <label id="card_number_label"></label>
+    </td>
+    <td>
+        <input type="hidden" id="card_number_input" name="card_number_input" placeholder="Wpisz numer legitymacji" />
+    </td>
+</tr>
+<tr>
+</tr>
+</table>
+    <input type="submit" value="Wyślij" class="btn btn-primary btn-large" /><!--onclick="skryptpesel()" trzeba napisac skrypt który nie będzie ściągał walidacji-->
+</form>
+{% else %}
+<h1>W celu składania wniosków kredytowych należy zalogować się do systemu!</h1>
+{% endif %}
+<!--koniec danych usera-->
+{% endblock %}
+<!--onclick="return confirm('Jesteś pewien?')      onclick="myFunction()"   "-->

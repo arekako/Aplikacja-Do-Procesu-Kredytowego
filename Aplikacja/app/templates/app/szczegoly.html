@@ -1,0 +1,247 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+<h3>Poniżej szczegóły dla aktualnego wniosku:</h3>
+<table>
+<tr>
+    <td>
+        <label>Wniosek o numerze : {{ creditapplication.id }}</label>
+    </td>
+    <td>
+        <label>Składany przez użytkownika : {{ creditapplication.personal_data_id }}</label>
+    </td>
+</tr>
+ {% if personaldata %}
+<tr>
+    <td>
+        <label>1.Dane osobowe: </label>
+    </td>
+</tr>
+<tr>
+    <td>
+        <label>Imie klienta : {{ personaldata.name }}</label>
+    </td>
+    <td>
+        <label>Nazwisko klienta : {{ personaldata.surname }}</label>
+    </td>
+    <td>
+        <label>Pesel : {{ personaldata.pesel }}</label>
+    </td>
+    <td>
+        <label>Nr. dowodu osobistego : {{ personaldata.identity_card }}</label>
+    </td>
+</tr>
+<tr>
+    <td>
+        <label>Numer telefonu : {{ personaldata.telephon_number }}</label>
+    </td>
+    <td>
+        <label>Adres mailowy: : {{ personaldata.mail }}</label>
+    </td>
+    <td>
+        <label>Wydatki miesięczne : {{ personaldata.monthly_expenses }}</label>
+    </td>
+    <td>
+        <label>Status cywilny : {{ personaldata.marital_status }}</label>
+    </td>
+</tr>
+<tr>
+    <td>
+        <label>Miejscowość zamieszkania : {{ personaldata.city }}</label>
+    </td>
+    <td>
+        <label>Kod pocztowy: : {{ personaldata.postal_code }}</label>
+    </td>
+    <td>
+        <label>Ulica : {{ personaldata.street }}</label>
+    </td>
+    <td>
+        <label>Nr domu/ Nr mieszkania : {{ personaldata.house_number }}/{{ personaldata.flat_number }}</label>
+    </td>
+</tr>
+<tr>
+    <td>
+        <label>Uzupełnione wyształcenie : {{ personaldata.education }}</label>
+    </td>
+    <td>
+        <label>Stan cywilny: {{ personaldata.marital_status }}</label>
+    </td>
+</tr>
+{% endif %}     
+</table><!--tabelka do danych osobowych-->
+<h3> </h3>
+<table>
+{% if kontrakt %}<!--tutaj umowy-->
+<tr>
+     <td>
+        <label>2.Dane dochodowe</label>
+    </td>
+    <td>
+        <label>Id dochodu: {{Dochod.id}}</label>
+    </td>
+    <td>
+        <label>Data początku kontraktu: {{Dochod.date_start_of_employment}}</label>
+    </td>
+    <td>
+        <label>Data końca kontraktu: {{Dochod.end_of_employment}}</label>
+    </td>
+</tr><!--id/daty-->
+<tr>
+    <td>
+        <label>Dochód średniomiesięczny: {{Dochod.awerage_six_monthly_income}}</label>
+    </td>
+    <td>
+        <label>Grupa zawodowa: {{Dochod.occupational_group}}</label>
+    </td>
+    <td>
+        <label>Pełniony zawód: {{Dochod.profession}}</label>
+    </td>
+    <td>
+        <label>Nip pracodawcy: {{Dochod.nip}}</label>
+    </td>
+</tr><!--pozostałe-->
+{% else %}<!--tutaj emeryturki-->
+<tr>
+     <td>
+        <label>2.Dane dochodowe: </label>
+    </td>
+    <td>
+        <label>Id dochodu: {{Dochod.id}}</label>
+    </td>
+    <td>
+        <label>Od kiedy dostaje świadczenie: {{Dochod.date_start}}</label>
+    </td>
+    <td>
+        <label>Do kiedy dostaje świadczenie: {{Dochod.date_end}}</label>
+    </td>
+</tr><!--id/daty-->
+<tr>
+    <td>
+        <label>Kwota emerytury: {{Dochod.pension_amount}}</label>
+    </td>
+    <td>
+        <label>Numer legitymacji: {{Dochod.card_number}}</label>
+    </td>
+</tr><!--pozostałe-->
+{% endif %}  
+</table><!--tabelka do dochodu-->
+<h3> </h3>
+<table>
+{% if proposedoffer %}<!--tutaj oferta przydzielona-->
+<tr>
+    <td>
+        <label>3.Przydzielona oferta:</label>
+    </td>
+    <td>
+        <label>Minimalna kwota: {{proposedoffer.initial_amount}}</label>
+    </td>
+    <td>
+        <label>Maksymalna kwota: {{proposedoffer.maximal_amount}}</label>
+    </td>
+</tr><!--id/kwoty-->
+<tr>
+    <td>
+        <label> </label>
+    </td>
+    <td>
+        <label>Minimalny okres: {{proposedoffer.minimum_load_period}}</label>
+    </td>
+    <td>
+        <label>Maksymalny okres: {{proposedoffer.maximum_load_period}}</label>
+    </td>
+</tr><!--okresy-->
+{% endif %}  
+</table><!--tabelka do wystawionej oferty-->
+<h3> </h3>
+<table>
+{% if confirmedoffer %}<!--tutaj oferta przydzielona-->
+<tr>
+    <td>
+        <label>4.Zatwierdzona oferta:</label>
+    </td>
+    <td>
+        <label>Kwota: {{confirmedoffer.confirmed_amount}}</label>
+    </td>
+    <td>
+        <label>Okres: {{confirmedoffer.period_approved}}</label>
+    </td>
+</tr><!--kwoty-->
+<tr>
+    <td>
+        <label> </label>
+    </td>
+    <td>
+        <label>Kwota raty: {{confirmedoffer.installment_amount}}</label>
+    </td>
+    <td>
+        <label>Całkowita kwota do spłaty: {{confirmedoffer.totall_credit_amount}}</label>
+    </td>
+</tr><!--rata-->
+{% endif %}  
+</table><!--tabelka do zatwierdzonej oferty-->
+<h3> </h3>
+<table>
+{% if requiredDocuments %}<!--tutaj oferta przydzielona-->
+<tr>
+    <td>
+        <label>5.Wymagane dokumenty:</label>
+    </td>
+    <td>
+        <label>Trzeba dostarczyć następujące dokumenty: {{requiredDocuments.documents_number}}</label>
+    </td>
+</tr><!--kwoty-->
+{% endif %}  
+</table><!--tabelka do wymaganych dokumentów-->
+<h3> </h3>
+<table>
+{% if addedDocuments %}
+<tr>
+    <td>
+        <label>6.Dostarczone dokumenty w paczce:</label>
+    </td>
+    <td>
+        <label>Ścieżka do dodanych plików: {{addedDocuments.file}}</label>
+        <!--<a href="media\addedDocuments.file">Plik:</a>-->
+    </td>
+    <td>
+        <label>Komentarz doradcy : {{addedDocuments.name}}</label>
+    </td>
+    <td>
+        <label>Numer rachunku : {{personaldata.iban_number}}</label>
+    </td>
+</tr><!--kwoty-->
+{% endif %}  
+</table><!--tabelka do dostarczonych dokumentów-->
+<h3> </h3>
+<table>
+{% if zakonczony %}<!--tutaj komunikat o odrzucie lub rezygnacji-->
+<tr>
+    <td>
+        <label>Wniosek jest na etapie: {{rekorddostep.status_name}}</label>
+    </td>
+    <td>
+        <label>Ostatni komunikat na wniosku to : {{creditapplication.comment}}</label>
+    </td>
+    <td>
+        <label>Wniosek zakończony!</label>
+    </td>
+</tr>
+{% endif %}  
+</table><!--tabelka do ostatniego komunikatu-->
+<h3> </h3>
+<table>
+{% if zakonczony_c %}
+<tr>
+    <td>
+        <label>Wniosek zakończony pozytywnie.</label>
+    </td>
+    <td>
+        <label>Ostatni komunikat na wniosku to : {{creditapplication.comment}}</label>
+    </td>
+    <td>
+        <label>Wniosek zakończony!</label>
+    </td>
+</tr>
+{% endif %}  
+</table><!--tabelka do ostatniego komunikatu-->
+<h3> </h3>
+{% endblock %}

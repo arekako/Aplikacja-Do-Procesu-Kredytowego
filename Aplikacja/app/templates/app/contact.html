@@ -1,0 +1,15 @@
+{% extends "app/layout.html" %}
+{% block content %}
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+<address>
+    {{imie_nazwisko_autora}}<br />
+    {{miejscowosc_autora}}<br />
+    {{poczta_autora}}<br />
+    <abbr title="Telefon">Numer :</abbr>
+    784-740-737
+</address>
+<address>
+    <strong>Kontakt mailowy:</strong>   <a href="mailto:arek.peplinski@wp.pl">arek.peplinski@wp.pl</a>
+</address>
+{% endblock %}

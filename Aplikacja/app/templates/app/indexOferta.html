@@ -1,0 +1,93 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+<!--
+    jeśli Pracownik banku to tylko wnioski
+-->
+{% if all_creditapplications %}
+<h1>{{message}}</h1>
+<h3>Poniżej wszystkie wnioski z tabelki CreditApplication (wszystkie wnioski z bazy):</h3>
+<ul><!--te linki widoczne dla wszystkich wniosków-->
+    {% for creditapplication in all_creditapplications %}
+    <li><a href="/wniosek/{{ creditapplication.id }}/">Id wniosku : {{ creditapplication.id }}</a></li><!-- link do konkretnego wniosku z tabelki-->
+    <!--<li><a href="/wniosek/oferta/ creditapplication.id/wyslijoferte/">Zaproponuj ofertę dla wniosku :creditapplication.id }}</a>-->
+    {% endfor %}
+</ul>
+{% endif %}
+<!--
+   { if creditapplications_for_person }<!--Jezeli istnieja wnioski do procesowania po stronie człowieczka na ofercie
+dopisane w celu sprawdzenia działanie wyszukania wniosków ze statusem 2
+<h3>{etykieta_na_strone}</h3>
+<ul>
+     for creditapplication in creditapplications_for_person }
+    <li><a href="/wniosek/{ creditapplication.id }}/">Informacje do wniosku: { creditapplicatio
+    <li><a href="/wniosek/{ creditapplication.id }/{doklej_ul}/">{doklej_etykiete} : { creditapplica
+    { endfor }
+</ul>
+ else }
+<h3>Nie masz żadnych wniosków w bazie</h3>
+{ endif }
+
+<h3>{zawoduzytkownikazbazy}</h3> 
+
+-->
+{% if zawoduzytkownikazbazy == "Pracownik banku" %}
+<h3>Wnioski oczekujące na ofertę:</h3>
+<ul>
+    {% for creditapplication in creditapplications_wait_for_offert %}
+    <li><a href="/wniosek/{{ creditapplication.id }}/wyslijoferte/">Prześlij ofertę dla : {{ creditapplication.id }}</a></li><!-- link do konkretnego wniosku z tabelki-->
+    {% endfor %}
+</ul>
+<h3>Wnioski oczekujące na wybór dokumentów:</h3>
+<ul>
+    {% for creditapplication in creditapplications_wait_for_documents %}
+    <li><a href="/wniosek/{{ creditapplication.id }}/wyslijwymaganedokumenty/">Wymagaj dokumentów od : {{ creditapplication.id }}</a></li><!-- link do konkretnego wniosku z tabelki-->
+    {% endfor %}
+</ul>
+<h3>Wnioski oczekujące na ostateczną decyzję:</h3>
+<ul>
+    {% for creditapplication in creditapplications_wait_for_decision %}
+    <li><a href="/wniosek/{{ creditapplication.id }}/ostatecznadecyzja/">Wyślij ostateczną decyzję dla  : {{ creditapplication.id }}</a></li><!-- link do konkretnego wniosku z tabelki-->
+    {% endfor %}
+</ul>
+<h3>Wnioski na rezygnacji:</h3>
+<ul><!--tutaj dokonczyc link-->
+    {% for creditapplication in creditapplications_in_resignation %}
+    <li><a href="/wniosek/{{ creditapplication.id }}/">Klient zrezygnował  na wniosku : {{ creditapplication.id }}</a></li><!-- link do konkretnego wniosku z tabelki-->
+    {% endfor %}
+</ul>
+{% else %}
+<h3>Nie jesteś pracownikiem banku</h3>
+{% endif %}
+
+{% if zawoduzytkownikazbazy == "Doradca" %}
+<h3>Wnioski oczekujące na zatwierdzenie oferty:</h3>
+<ul>
+    {% for creditapplication in creditapplications_wait_for_confirmed_offert %}
+    <li><a href="/wniosek/{{ creditapplication.id }}/zatwierdzoferte/">Zatwierdź ofertę na wniosku  : {{ creditapplication.id }}</a></li><!-- link do konkretnego wniosku z tabelki-->
+    {% endfor %}
+</ul>
+<h3>Wnioski oczekujące na wybór / dodanie  dokumentów:</h3>
+<ul>
+    {% for creditapplication in creditapplications_wait_for_add_documents %}
+    <li><a href="/wniosek/{{ creditapplication.id }}/przeslijdokumenty/">Dodaj dokumenty na : {{ creditapplication.id }}</a></li><!-- link do konkretnego wniosku z tabelki-->
+    {% endfor %}
+</ul>
+<h3>Wnioski pozytywnie rozpatrzone:</h3>
+<ul>
+    {% for creditapplication in creditapplications_complete_app %}
+    <li><a href="/wniosek/{{ creditapplication.id }}/">Kredyt wypłacono na  : {{ creditapplication.id }}</a></li><!-- link do konkretnego wniosku z tabelki-->
+    {% endfor %}
+</ul>
+<h3>Wnioski na odrzuceniu po decyzji banku :</h3>
+<ul><!--tutaj dokonczyc link-->
+    {% for creditapplication in creditapplications_in_rejection %}
+    <li><a href="/wniosek/{{ creditapplication.id }}/">Bank odrzucił wniosek  : {{ creditapplication.id }}</a></li><!-- link do konkretnego wniosku z tabelki-->
+    {% endfor %}
+</ul>
+{% else %}
+<h3>Nie jesteś Doradcą!</h3>
+{% endif %}
+
+
+
+{% endblock %}

@@ -1,0 +1,43 @@
+﻿{% extends "app/layout.html" %}
+{% block content %}
+<!--poczatek danych usera-->
+{% if user.is_authenticated %}
+<hr />
+<h2>{{ user.username }}  - jesteś w trakcie dostarczenia dokumentów do banku.</h2><br>
+<hr />
+<h3>Poniżej lista wymaganych dokumentów, które wymaga bank:</h3>
+<h3>Bank zażądał następujących dokumentów: </h3>
+{% for dok in  dokumenty %}
+<ul>
+    <li>{{dok.id}} -  {{dok.document_name}}</li>
+</ul>
+{% endfor %} 
+<h3>W celu przesłania dokumentów do banku  kliknij w przycisk "Wyślij dokumenty."</h3>
+<hr />
+<h3>{{ message }}</h3>
+<ul>
+    <li><a href="/wniosek/{{ creditapplication.id }}/rezygnacja/">Rezygnacja</a></li><!--przenosi na dobry link-->
+</ul>
+<!--dokonczenie formy-->
+<form action="" method="post" enctype="multipart/form-data">{% csrf_token %}<!--jak jest pusta action="" to dobrze działa i zapisuje-->
+<hr />
+   <p>
+        <label for="file">Wybierz plik  w formacie .zip: </label>
+        <input type="file" name="file" required/>
+   </p>
+   <p>
+        <label for="name">Komentarz: </label>
+        <input type="text" name="name" required/>
+   </p>
+   <p>
+        <label for="iban">Numer rachunku do przelewu: </label>
+        <input type="text" name="iban" pattern="[0-9]+" maxlength="26" minlength="26" required placeholder="Wpisz numer rachunku"/>
+   </p>
+<input type="submit" value="Wyślij dokumenty" class="btn btn-primary btn-large"/>
+</form>
+<!--dopisane-->
+{% else %}
+<h1>Aby otrzymać odpowiednie dostępy skontaktuj sie z twórcą portalu!</h1>
+{% endif %}
+<!--koniec danych usera-->
+{% endblock %}

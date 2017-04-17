@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Aplikacja </title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
+    <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
+    <!--dodano-->
+    <script src="//cdn.jsdelivr.net/webshim/1.14.5/polyfiller.js"></script>
+    <script>
+        function myFunction()
+           {
+            document.getElementById("demo").innerHTML = "Hello World";
+            document.getElementById("label0").innerHTML = "Jakies pole label";
+            document.getElementById("input0").innerHTML = "Jakis tekst";
+            document.getElementById("input0").type = "text";
+           }//tej funkcji juz nie używam
+    </script>
+    <script type="text/javascript">
+        function refreshIncomeFields($i)
+        {
+            alert($i);
+            if ($i == 1 || $i == 2 || $i == 3 || $i == 4) {
+                document.getElementById("occupational_group_select").style.display = 'inline';//dodaje wybor  grupy zawodowej na stronie
+                //ustawienie wymagalności na pola
+                document.getElementById("date_start_of_employment_input").setAttribute("required", "")//ustawienie wymagalności na datę zatrudnienia
+                document.getElementById("awerage_six_monthly_income_input").setAttribute("required", "")
+                document.getElementById("profession_input").setAttribute("required", "")
+                document.getElementById("nip_input").setAttribute("required", "")
+                document.getElementById("occupational_group_select").setAttribute("required", "")
+                //sciaganie wymagalnosci z pol emerytury/renty
+                document.getElementById("date_start_input").removeAttribute("required")//zdjecie wymagalnosci z daty poczatku zatrudnienia
+                document.getElementById("pension_amount_input").removeAttribute("required")
+                document.getElementById("card_number_input").removeAttribute("required")
+                document.getElementById("date_end_input").removeAttribute("required")
+                if ($i == 2 || $i == 3 || $i == 4) {
+                    //ustawienie wymagalności na pola
+                    document.getElementById("end_of_employment_input").setAttribute("required", "")
+                }
+                //pola niewidoczne
+                document.getElementById("end_of_employment_input").type = "hidden";
+                document.getElementById("date_end_input").type = "hidden";
+                document.getElementById("date_start_input").type = "hidden";
+                document.getElementById("pension_amount_input").type = "hidden";
+                document.getElementById("card_number_input").type = "hidden";
+                //labele niewidoczne
+                document.getElementById("end_of_employment_label").innerHTML = "";
+                document.getElementById("date_start_label").innerHTML = "";
+                document.getElementById("pension_amount_label").innerHTML = "";
+                document.getElementById("card_number_label").innerHTML = "";
+                document.getElementById("date_end_label").innerHTML = "";
+                //labele widoczne
+                if ($i == 2 || $i == 3 || $i == 4) {
+                    document.getElementById("end_of_employment_label").innerHTML = "Koniec zatrudnienia";
+                }
+                document.getElementById("date_start_of_employment_label").innerHTML = "Data początku zatrudnienia ";
+                document.getElementById("awerage_six_monthly_income_label").innerHTML = "Średni dochód 6-miesięczny ";
+                document.getElementById("profession_label").innerHTML = "Zawód ";
+                document.getElementById("nip_label").innerHTML = "NIP pracodawcy ";
+                document.getElementById("occupational_group_label").innerHTML = "Grupa zawodowa";
+                //pola widoczne
+                if ($i == 2 || $i == 3 || $i == 4) {
+                    document.getElementById("end_of_employment_input").type = "date";
+                }
+                document.getElementById("date_start_of_employment_input").type = "date";//text
+                document.getElementById("awerage_six_monthly_income_input").type = "number";//text
+                document.getElementById("profession_input").type = "text";
+                document.getElementById("nip_input").type = "text";
+                document.getElementById("occupational_group_select").type = "text";//occupational_group_input
+            }
+            if ($i == 5 || $i == 6 || $i == 7) {
+                document.getElementById("occupational_group_select").style.display = 'none';//dopisane - ukrycie wyboru grupy zawodowej
+                //ustawienie wymagalnosci na pola 
+                document.getElementById("date_start_input").setAttribute("required", "")//ustawienie wymagalności na datę zatrudnienia
+                document.getElementById("pension_amount_input").setAttribute("required", "")
+                document.getElementById("card_number_input").setAttribute("required", "")
+                if ($i == 7) {
+                    document.getElementById("date_end_input").setAttribute("required", "")
+                }
+                //sciaganie wymagalnosci na pola umów
+                document.getElementById("date_start_of_employment_input").removeAttribute("required")//zdjecie wymagalnosci z daty poczatku zatrudnienia
+                document.getElementById("awerage_six_monthly_income_input").removeAttribute("required")
+                document.getElementById("profession_input").removeAttribute("required")
+                document.getElementById("nip_input").removeAttribute("required")
+                document.getElementById("end_of_employment_input").removeAttribute("required")
+                document.getElementById("occupational_group_select").removeAttribute("required")
+                if ($i == 7) {
+                    document.getElementById("date_end_label").innerHTML = "Data zakończenia pobierania świadczenia";
+                }
+                //tutaj text
+                document.getElementById("end_of_employment_input").type = "hidden";
+                document.getElementById("date_end_input").type = "hidden";
+
+                //labele widoczne
+                if ($i == 7) {
+                    document.getElementById("date_end_input").type = "date";//text
+                }
+                document.getElementById("date_start_label").innerHTML = "Od kiedy dostajesz świadczenie";
+                document.getElementById("pension_amount_label").innerHTML = "Kwota swiadczenia";
+                document.getElementById("card_number_label").innerHTML = "Numer legitymacji";
+                if ($i != 7) {
+                    document.getElementById("date_end_label").innerHTML = "";//dopisane
+                }//pola widoczne
+                document.getElementById("date_start_input").type = "date";//text
+                document.getElementById("pension_amount_input").type = "number";//text
+                document.getElementById("card_number_input").type = "text";
+                //labele niewidoczne
+                document.getElementById("date_start_of_employment_label").innerHTML = "";
+                document.getElementById("end_of_employment_label").innerHTML = "";
+                document.getElementById("awerage_six_monthly_income_label").innerHTML = "";
+                document.getElementById("profession_label").innerHTML = "";
+                document.getElementById("nip_label").innerHTML = "";
+                document.getElementById("occupational_group_label").innerHTML = "";
+                //pola niewidoczne
+                document.getElementById("date_start_of_employment_input").type = "hidden";
+                document.getElementById("awerage_six_monthly_income_input").type = "hidden";
+                document.getElementById("profession_input").type = "hidden";
+                document.getElementById("nip_input").type = "hidden";
+                document.getElementById("occupational_group_select").type = "hidden";
+            }
+        }//funkcja odświeżająca  widoczność pól do źródeł dochodu.
+    </script>
+    <!--dopisany nowy scrypcik-->
+    <script type="text/javascript">
+        function refreshValueofDocumentForm($i,$j)//skrypt zmieniający atrybut  value dla checkboxa
+        {
+            var element = document.getElementById($i).getAttribute("value");//pobiera wartosc atrybutu true/false z odpowiedniego elementu
+            if (element == "False") {
+                document.getElementById($i).value = "True";
+            }
+            if (element == "True") {
+                document.getElementById($i).value = "False";
+            }
+            //dopisane
+            var wymagane = "";
+            for (i = 1; i <= $j; i++) {
+                if (document.getElementById(i).value == "True")
+                {
+                    wymagane += i + ",";
+                }
+
+            }
+            if (wymagane != "") {
+                document.getElementById("przyciskZatwierdzDoksy").removeAttribute("disabled")
+            }
+            else
+            {
+                document.getElementById("przyciskZatwierdzDoksy").setAttribute("disabled","")
+            }
+            wymagane = wymagane.substring(0, wymagane.length - 1);//usuniecie ostatniego przecinka
+            document.getElementById("documents_number").value = wymagane;
+
+        }
+    </script>
+        <!--dopisany nowy scrypcik-->
+    <script type="text/javascript">
+        function refreshNumbers($i)//skrypt zmieniający atrybut  value dla checkboxa
+        {
+            var wymagane = "";
+            //var ilosc = 0;
+            for (i = 1; i <= $i; i++) {
+                if (document.getElementById(i).value == "True")
+                {
+                    wymagane += i + ",";
+                    //ilosc += 1;
+                }
+
+            }
+            wymagane = wymagane.substring(0, wymagane.length - 1);//usuniecie ostatniego przecinka
+            document.getElementById("documents_number").value = wymagane;
+            //if (ilosc == 0) {
+             //   return false
+           // }
+            //alert($i + wymagane);
+        }
+    </script>
+        <!--walidacja pesel      oninvalid="validatepesel(value)"   onchange="validatepesel(value)" value="" -->
+    <script type="text/javascript">
+        function validatepesel(pesel) {
+            var reg = /^[0-9]{11}$/;
+            if (reg.test(pesel) == false) {
+                alert('Nie');
+                return false;
+            }
+            else {
+                var dig = ("" + pesel).split("");
+                var kontrola = (1 * parseInt(dig[0]) + 3 * parseInt(dig[1]) + 7 * parseInt(dig[2]) + 9 * parseInt(dig[3]) + 1 * parseInt(dig[4]) + 3 * parseInt(dig[5]) + 7 * parseInt(dig[6]) + 9 * parseInt(dig[7]) + 1 * parseInt(dig[8]) + 3 * parseInt(dig[9])) % 10;
+                if (kontrola == 0) kontrola = 10;
+                kontrola = 10 - kontrola;
+                if (parseInt(dig[10]) == kontrola) {
+                    alert('Tak')
+                    return true;
+                }
+                else {
+                    alert('Nie')
+                    return false;
+                }
+            }
+
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="/" class="navbar-brand">Aplikacja</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="{% url 'home' %}">Strona domowa</a></li>
+                    <li><a href="{% url 'about' %}">O aplikacji</a></li>
+                    <li><a href="{% url 'contact' %}">Kontakt</a></li>
+                </ul>
+                {% include 'app/loginpartial.html' %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+{% block content %}{% endblock %}
+        <hr/>
+        <footer>
+            <p>&copy; {{ year }}Aplikacja</p>
+        </footer>
+    </div>
+
+    <script src="{% static 'app/scripts/jquery-1.10.2.js' %}"></script>
+    <script src="{% static 'app/scripts/bootstrap.js' %}"></script>
+    <script src="{% static 'app/scripts/respond.js' %}"></script>
+{% block scripts %}{% endblock %}
+
+</body>
+
+</html>
