@@ -74,7 +74,7 @@
     <Content Include="app\templates\app\sentDocument.html" />
     <Content Include="app\templates\app\start.html" />
     <Content Include="app\templates\app\szczegoly.html" />
-    <Content Include="app\templates\app\usmiechnijSie.html" />
+    <Content Include="app\templates\app\komunikat.html" />
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
     <Content Include="app\static\app\content\bootstrap.css" />

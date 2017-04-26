@@ -92,13 +92,13 @@ def personalDataView(request):
         dostepy = AccessStatus.objects.filter(access_to_role=rolauzytkownika.role).order_by('status_id')# kazdy uzytkownik ma dostep do roli
     except PortalUser.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Uzytkownik nie ma przypisane żadnej roli!. W celu nadania dostepów skontaktuj się z właścicielem witryny.',}
                   )
     if (rolauzytkownika.role == "Pracownik banku"):
         return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Tylko doradca może składać wnioski.',
                   })
@@ -203,7 +203,7 @@ def personalDataView(request):
                 send_mail('Nie dodano', 'musisz wiecej zarabiac, wtedy moze dostaniesz kredyt', 'arek.peplinski@wp.pl', ['arek.peplinski@wp.pl']) 
             except:
                    return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Wprowadzono nieprawidłowy mail.',}
                   )
@@ -221,7 +221,7 @@ def indexOfertaView(request):
         all_creditapplications = CreditApplication.objects.all()#wszystkie wnioski
     except CreditApplication.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'W bazie nie ma żadnych wniosków.'})
     #dopisane 3 kwietnia - w celu wyszukiwania tych wniosków do których dostęp ma pracownik
     uzytkownikaktualny =  request.user.id #id aktualnie zalogowanego uzytkownika
@@ -229,7 +229,7 @@ def indexOfertaView(request):
         uzytkownikzbazy = PortalUser.objects.get(id_user_id__exact=uzytkownikaktualny)#rekord aktualnego użytkownika
     except PortalUser.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Użytkownik nie ma przypisanej roli.'})
     zawoduzytkownikazbazy = uzytkownikzbazy.role#zawod aktualnego uzytkownika z bazy: Doradca lub Pracownik Banku
     if zawoduzytkownikazbazy=='Pracownik banku':
@@ -243,7 +243,7 @@ def indexOfertaView(request):
            creditapplications_for_person =  CreditApplication.objects.filter(Q(status='2')|Q(status='4')|Q(status='6')|Q(status='8')).order_by('id')#wszystkie wnioski dla pracownika banku
        except CreditApplication.DoesNotExist:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Pracownik banku nie ma wniosków, na których może pracować'})
        etykieta_na_strone = 'Wnioski po stronie Pracownika banku. 2/4/6/8'
        doklej_url = 'wyslijoferte'
@@ -276,7 +276,7 @@ def indexOfertaView(request):
            creditapplications_for_person =  CreditApplication.objects.filter(Q(status='1')|Q(status='3')|Q(status='5')|Q(status='7')|Q(status='9')).order_by('id')#wszystkie wnioski dla pracownika banku
        except PortalUser.DoesNotExist:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Doradca nie ma wniosków na których może pracować.'})
        etykieta_na_strone = 'Wnioski po stronie Doradcy. 1/3/5/7/9'
        doklej_url = 'zatwierdzoferte'
@@ -323,7 +323,7 @@ def creditapplicationView(request, credit_id):
         creditapplication = CreditApplication.objects.get(pk=credit_id)#tutaj zwraca konkretny wniosek wyszykująć po id
     except CreditApplication.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Podany wniosek nie istnieje'})
     statuswniosku = creditapplication.status_id#kazdy wniosek ma status.zwraca liczbe,tak się szuka w rekordzie z bazy
     osobanawniosku = creditapplication.personal_data_id#kazdy wniosek ma osobę.zwraca liczbe z bazy
@@ -331,21 +331,21 @@ def creditapplicationView(request, credit_id):
         personaldata = PersonalData.objects.get(pk=osobanawniosku)#tutaj zwraca konkretna osoba przydzielona do wniosku
     except PersonalData.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Do wniosku nie jest przydzielona żadna osoba.'})
     dochodzwniosku = creditapplication.icome_id#dochód z wniosku.zwraca liczbe z bazy
     try:
         rekorddostep = AccessStatus.objects.get(pk=int(statuswniosku))# konkretny rekord z tabelki access status
     except AccessStatus.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Brak podanego statusu.'})
     dostepdowniosku = rekorddostep.access_to_role #nazwa rroli ktora ma dostep do tego wniosku
     try:
         uzytkownikzbazy = PortalUser.objects.get(id_user_id__exact=uzytkownikaktualny)#rekord aktualnego użytkownika
     except PortalUser.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Użytkownik nie jest w tabelce Portal user.'})    
     zawoduzytkownikazbazy = uzytkownikzbazy.role#zawod aktualnego uzytkownika z bazy
     if zawoduzytkownikazbazy==dostepdowniosku:
@@ -357,7 +357,7 @@ def creditapplicationView(request, credit_id):
            Dochod = ContractTable.objects.get(application_id__exact=credit_id)#jesli contract table  
        except ContractTable.DoesNotExist:
            return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Brak dochodu w tabelce.'})   
        idDochodu = Dochod.id
        kontrakt = "true"
@@ -366,7 +366,7 @@ def creditapplicationView(request, credit_id):
            Dochod = PensionTable.objects.get(application_id__exact=credit_id)#jesli pensiontable
        except PensionTable.DoesNotExist:
            return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Brak dochodu w tabelce.'})   
        idDochodu = Dochod.id
        kontrakt = None
@@ -423,14 +423,14 @@ def proposedofferView(request,creditapplication_id):
         creditapplication = CreditApplication.objects.get(pk=creditapplication_id)#tutaj zwraca konkretny cost wyszykująć po id
     except CreditApplication.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Wniosek nie istnieje.',
                       })
     #dopisane
     if(creditapplication.status_id!=2):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Wniosek na innym etapie.',
                   })
@@ -441,7 +441,7 @@ def proposedofferView(request,creditapplication_id):
         OfertaBankuDlaWniosku = BankOffer.objects.get(id=3)#przypisana na sztywno
     except BankOffer.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Brak oferty w Banku',}
                   )
@@ -458,7 +458,7 @@ def proposedofferView(request,creditapplication_id):
               proposed_offer_obj.save()
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z zapisem oferty dla klienta.',}
                   )
@@ -477,7 +477,7 @@ def proposedofferView(request,creditapplication_id):
               send_mail('Nie uzupelniono tabelki ProposedOffer', 'Forma zle zwalidowana', 'arek.peplinski@wp.pl', ['arek.peplinski@wp.pl']) 
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z wysłaniem maila.',}
                   )
@@ -497,11 +497,11 @@ def confirmedofferView(request,creditapplication_id):
         creditapplication = CreditApplication.objects.get(pk=creditapplication_id)#tutaj zwraca konkretny wniosek wyszykująć po id
     except CreditApplication.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',{'message':'Nie ma takiego wniosku..'})#jeśli wniosek nie istnieje to odpowiedni komunikat się pojawia
+                  'app/komunikat.html',{'message':'Nie ma takiego wniosku.'})#jeśli wniosek nie istnieje to odpowiedni komunikat się pojawia
         #dopisane
     if(creditapplication.status_id!=3):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Wniosek jest na innym etapie.',
                   })
@@ -511,7 +511,7 @@ def confirmedofferView(request,creditapplication_id):
         proposedoffer = ProposedOffer.objects.get(pk=creditapplication.proposed_offer_id)
     except ProposedOffer.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Brak oferty wystawionej przez pracownika banku dla klienta',}
                   )
@@ -529,7 +529,7 @@ def confirmedofferView(request,creditapplication_id):
               confirmed_offer_obj.save()
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z zapisem oferty zatwierdzonej przez klienta.',}
                   )
@@ -544,13 +544,13 @@ def confirmedofferView(request,creditapplication_id):
                          }
                   )
        else:
-          try:
-              send_mail('Nie uzupelniono tabelki ConformedOffer', 'Forma zle zwalidowana', 'arek.peplinski@wp.pl', ['arek.peplinski@wp.pl']) 
-          except:
-              return render(request,
-                  'app/usmiechnijSie.html',
+          #try:
+           #   send_mail('Nie uzupelniono tabelki ConformedOffer', 'Forma zle zwalidowana', 'arek.peplinski@wp.pl', ['arek.peplinski@wp.pl']) 
+          #except:
+           return render(request,
+                  'app/komunikat.html',
                   {
-                      'message':'Problem z wysłaniem maila.',}
+                      'message':'Przesłano niewłaściwe wartości.',}
                   )
     else:
          form = ConfirmedOfferForm()
@@ -559,7 +559,7 @@ def confirmedofferView(request,creditapplication_id):
                          {
                            'form':form,
                            'creditapplication':creditapplication,
-                           'proposedoffer':proposedoffer,#dopisane
+                           'proposedoffer':proposedoffer,
                          }
                    ) 
 def requireddocumentsView(request,creditapplication_id):
@@ -568,7 +568,7 @@ def requireddocumentsView(request,creditapplication_id):
         creditapplication = CreditApplication.objects.get(pk=creditapplication_id)#tutaj zwraca konkretny wniosek wyszykująć po id
     except CreditApplication.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Wniosek nie istnieje.',
                       })
@@ -576,7 +576,7 @@ def requireddocumentsView(request,creditapplication_id):
         #dopisane
     if(creditapplication.status_id!=4):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Wniosek na innym etapie.',
                   })
@@ -584,7 +584,7 @@ def requireddocumentsView(request,creditapplication_id):
         technicalDocuments = TechnicalDocument.objects.all()
     except TechnicalDocument.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Brak listy dokumentów do wyboru  w  Banku',}
                   )
@@ -598,7 +598,7 @@ def requireddocumentsView(request,creditapplication_id):
               required_documents_obj.save()
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z zapisem wymaganych dokumentów dla klienta.',}
                   )
@@ -617,7 +617,7 @@ def requireddocumentsView(request,creditapplication_id):
               send_mail('Nie uzupelniono tabelki Wymaganych dokumentów', 'Forma zle zwalidowana', 'arek.peplinski@wp.pl', ['arek.peplinski@wp.pl']) 
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z wysłaniem maila.',}
                   )
@@ -637,13 +637,13 @@ def sentdocumentView(request,creditapplication_id):
         creditapplication = CreditApplication.objects.get(pk=creditapplication_id)#tutaj zwraca konkretny wniosek wyszykująć po id
     except CreditApplication.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Wniosek nie istnieje.',
                       })
     if(creditapplication.status_id!=5):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Wniosek na innym etapie.',
                   })
@@ -652,7 +652,7 @@ def sentdocumentView(request,creditapplication_id):
         requiredDocuments = RequiredDocument.objects.get(pk=creditapplication.required_document_id)#tutaj zwraca konkretny wniosek wyszykująć po id
     except RequiredDocument.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html', {
+                  'app/komunikat.html', {
                       'message':'Brak wymaganych dokumentów. Wniosek jest na innym etapie.',}
                   )
     #tutaj trzeba wydobyć cyfry z napisu jest ok
@@ -671,7 +671,7 @@ def sentdocumentView(request,creditapplication_id):
               sent_documents_obj.save()
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z zapisem dostarczonych dokumentów.',
                   }
@@ -681,7 +681,7 @@ def sentdocumentView(request,creditapplication_id):
               osoba = PersonalData.objects.get(pk=creditapplication.personal_data_id)
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Nie można znaleść właściciela wniosku.',
                   }
@@ -703,7 +703,7 @@ def sentdocumentView(request,creditapplication_id):
               send_mail('Nie uzupelniono tabelki Dostarczonych dokumentów', 'Forma zle zwalidowana ', 'arek.peplinski@wp.pl', ['arek.peplinski@wp.pl']) 
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z wysłaniem maila.',}
                   )
@@ -728,13 +728,13 @@ def lastDecisionView(request,creditapplication_id):
         creditapplication = CreditApplication.objects.get(pk=creditapplication_id)#tutaj zwraca konkretny wniosek wyszykująć po id
     except CreditApplication.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Wniosek nie istnieje.',
                       })
     if(creditapplication.status_id!=6):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Wniosek na innym etapie.',
                   })
@@ -742,14 +742,14 @@ def lastDecisionView(request,creditapplication_id):
         requiredDocuments = RequiredDocument.objects.get(pk=creditapplication.required_document_id)#tutaj lista konkretnych dokumentów - żądanych przez pracownika banku
     except RequiredDocument.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html', {
+                  'app/komunikat.html', {
                       'message':'Brak wymaganych dokumentów. Wniosek jest na innym etapie.',}
                   )
     try:
         addedDocuments = SentDocument.objects.get(pk=creditapplication.added_documents_id)#tutaj rekord dokumentów dodanych
     except SentDocument.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html', {
+                  'app/komunikat.html', {
                       'message':'Brak przesłanych dokumentów.',}
                   )
         #być może jakaś forma
@@ -782,7 +782,7 @@ def lastDecisionView(request,creditapplication_id):
                   application_complete_obj.save()
               except:
                   return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z zapisem zakończonego wniosku.',}
                   )
@@ -797,7 +797,7 @@ def lastDecisionView(request,creditapplication_id):
               send_mail('Nie nadano ostatecznej decyzji', 'Forma zle zwalidowana', 'arek.peplinski@wp.pl', ['arek.peplinski@wp.pl']) 
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z wysłaniem maila.',}
                   )
@@ -819,25 +819,25 @@ def rejectionView(request,creditapplication_id):
         creditapplication = CreditApplication.objects.get(pk=creditapplication_id)#tutaj zwraca konkretny wniosek wyszykująć po id
     except CreditApplication.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Wniosek nie istnieje.',
                       })
     if(creditapplication.status_id==9):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Wniosek jest już na odrzuceniu.',
                   })
     if(creditapplication.status_id==7):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Wniosków pozytywnie zakończonych nie można odrzucać.',
                   })
     if(creditapplication.status_id==3 or creditapplication.status_id==5 or creditapplication.status_id==8):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Wniosek na innym etapie.',
                   })
@@ -846,12 +846,12 @@ def rejectionView(request,creditapplication_id):
         uzytkownikzbazy = PortalUser.objects.get(id_user_id__exact=uzytkownikaktualny)#rekord aktualnego użytkownika
     except PortalUser.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Użytkownik nie ma przypisanej roli.'})
     zawoduzytkownikazbazy = uzytkownikzbazy.role#zawod aktualnego uzytkownika z bazy: Doradca lub Pracownik Banku
     if zawoduzytkownikazbazy=='Doradca':
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Ten uzytkownik nie może odrzucać wniosków.'})
     if request.method =='POST':
        form = RejectionForm(request.POST)
@@ -871,7 +871,7 @@ def rejectionView(request,creditapplication_id):
               send_mail('Odrzucono wniosek', 'Forma zle zwalidowana ', 'arek.peplinski@wp.pl', ['arek.peplinski@wp.pl']) 
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z wysłaniem maila.',}
                   )
@@ -890,25 +890,25 @@ def resignationView(request,creditapplication_id):
         creditapplication = CreditApplication.objects.get(pk=creditapplication_id)#tutaj zwraca konkretny wniosek wyszykująć po id
     except CreditApplication.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Wniosek nie istnieje.',
                       })
     if(creditapplication.status_id==8):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Wniosek jest już na rezygnacji.',
                   })
     if(creditapplication.status_id==7):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Na wnioskach pozytywnie zakończonych nie można rezygnować..',
                   })
     if(creditapplication.status_id==2 or creditapplication.status_id==4 or creditapplication.status_id==6 or creditapplication.status_id==9):
            return render(request,
-                  'app/usmiechnijSie.html',   
+                  'app/komunikat.html',   
                   {
                       'message':'Wniosek na innym etapie.',
                   })
@@ -917,12 +917,12 @@ def resignationView(request,creditapplication_id):
         uzytkownikzbazy = PortalUser.objects.get(id_user_id__exact=uzytkownikaktualny)#rekord aktualnego użytkownika
     except PortalUser.DoesNotExist:
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Użytkownik nie ma przypisanej roli.'})
     zawoduzytkownikazbazy = uzytkownikzbazy.role#zawod aktualnego uzytkownika z bazy: Doradca lub Pracownik Banku
     if zawoduzytkownikazbazy=='Pracownik banku':
         return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {'message':'Ten użytkownik nie może nadawać rezygnacji.'})
     if request.method =='POST':
        form = RejectionForm(request.POST)
@@ -942,7 +942,7 @@ def resignationView(request,creditapplication_id):
               send_mail('Wniosek na rezygnacji', 'Forma zle zwalidowana ', 'arek.peplinski@wp.pl', ['arek.peplinski@wp.pl']) 
           except:
               return render(request,
-                  'app/usmiechnijSie.html',
+                  'app/komunikat.html',
                   {
                       'message':'Problem z wysłaniem maila.',}
                   )
